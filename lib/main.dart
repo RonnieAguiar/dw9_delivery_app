@@ -1,0 +1,9 @@
+import 'package:dw9_delivery/app/dw9_delivery_app.dart';
+import 'package:flutter/material.dart';
+
+import 'app/core/config/env/env.dart';
+
+void main()  async {
+  await Env.i.load();
+  runApp(Dw9DeliveryApp());
+}
