@@ -29,12 +29,6 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
     super.dispose();
   }
 
-  void _showPassword() {
-    setState(() {
-      _obscurePassword = !_obscurePassword;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginController, LoginState>(
@@ -95,25 +89,34 @@ class _LoginPageState extends BaseState<LoginPage, LoginController> {
                       const SizedBox(
                         height: 30,
                       ),
-                      TextFormField(
-                        controller: _passwordEC,
-                        decoration: InputDecoration(
-                          label: const Text('Senha'),
-                          prefixIcon: const Icon(
-                            Icons.key_outlined,
-                          ),
-                          suffixIcon: IconButton(
-                            onPressed: _showPassword,
-                            icon: _obscurePassword
-                                ? const Icon(Icons.visibility_off_outlined)
-                                : const Icon(Icons.visibility_outlined),
-                          ),
-                        ),
-                        obscureText: _obscurePassword,
-                        validator: Validatorless.multiple([
-                          Validatorless.required('Campo Senha é obrigatório'),
-                        ]),
-                        textInputAction: TextInputAction.done,
+                      StatefulBuilder(
+                        builder: (context, setState) {
+                          return TextFormField(
+                            controller: _passwordEC,
+                            decoration: InputDecoration(
+                              label: const Text('Senha'),
+                              prefixIcon: const Icon(
+                                Icons.key_outlined,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                                icon: Icon(_obscurePassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined),
+                              ),
+                            ),
+                            obscureText: _obscurePassword,
+                            validator: Validatorless.multiple([
+                              Validatorless.required(
+                                  'Campo Senha é obrigatório'),
+                            ]),
+                            textInputAction: TextInputAction.done,
+                          );
+                        },
                       ),
                       const SizedBox(
                         height: 50,

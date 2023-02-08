@@ -31,12 +31,6 @@ class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
     super.dispose();
   }
 
-  void _showPassword() {
-    setState(() {
-      _obscurePassword = !_obscurePassword;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterController, RegisterState>(
@@ -80,10 +74,11 @@ class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
                   ),
                   TextFormField(
                     decoration: const InputDecoration(
-                        labelText: 'Nome',
-                        prefixIcon: Icon(
-                          Icons.badge_outlined,
-                        )),
+                      labelText: 'Nome',
+                      prefixIcon: Icon(
+                        Icons.badge_outlined,
+                      ),
+                    ),
                     validator:
                         Validatorless.required('Campo Nome é obrigatório'),
                     controller: _nameEC,
@@ -111,47 +106,69 @@ class _RegisterPageState extends BaseState<RegisterPage, RegisterController> {
                   const SizedBox(
                     height: 30,
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Senha',
-                      prefixIcon: const Icon(Icons.key_outlined),
-                      suffixIcon: IconButton(
-                          onPressed: _showPassword,
-                          icon: _obscurePassword ?
-                          const Icon(Icons.visibility_off_outlined)
-                          :const Icon(Icons.visibility_outlined)),
-                    ),
-                    validator: Validatorless.multiple([
-                      Validatorless.required('Campo Senha é obrigatório'),
-                      Validatorless.min(
-                          6, 'Senha deve ter no mímino 6 carateres'),
-                    ]),
-                    controller: _passwordEC,
-                    obscureText: _obscurePassword,
-                    textInputAction: TextInputAction.next,
-                    onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                  StatefulBuilder(
+                    builder: (context, setState) {
+                      void showPassword() {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      }
+
+                      return Column(
+                        children: [
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Senha',
+                              prefixIcon: const Icon(Icons.key_outlined),
+                              suffixIcon: IconButton(
+                                onPressed: showPassword,
+                                icon: Icon(_obscurePassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined),
+                              ),
+                            ),
+                            validator: Validatorless.multiple([
+                              Validatorless.required(
+                                  'Campo Senha é obrigatório'),
+                              Validatorless.min(
+                                  6, 'Senha deve ter no mímino 6 carateres'),
+                            ]),
+                            controller: _passwordEC,
+                            obscureText: _obscurePassword,
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () =>
+                                FocusScope.of(context).nextFocus(),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Confirma Senha',
+                              prefixIcon: const Icon(Icons.key_outlined),
+                              suffixIcon: IconButton(
+                                onPressed: showPassword,
+                                icon: Icon(_obscurePassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined),
+                              ),
+                            ),
+                            validator: Validatorless.multiple(
+                              [
+                                Validatorless.required(
+                                    'Campo Confirmar Senha é obrigatório'),
+                                Validatorless.compare(
+                                    _passwordEC, 'Senha não confere'),
+                              ],
+                            ),
+                            obscureText: _obscurePassword,
+                            textInputAction: TextInputAction.done,
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Confirma Senha',
-                      prefixIcon: const Icon(Icons.key_outlined),
-                      suffixIcon: IconButton(
-                          onPressed: _showPassword,
-                          icon: _obscurePassword ?
-                          const Icon(Icons.visibility_off_outlined)
-                          :const Icon(Icons.visibility_outlined)),
-                    ),
-                    validator: Validatorless.multiple([
-                      Validatorless.required(
-                          'Campo Confirmar Senha é obrigatório'),
-                      Validatorless.compare(_passwordEC, 'Senha não confere'),
-                    ]),
-                    obscureText: _obscurePassword,
-                    textInputAction: TextInputAction.done,
-                  ),
+                  
                   const SizedBox(
                     height: 30,
                   ),
